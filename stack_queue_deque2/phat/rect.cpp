@@ -4,43 +4,50 @@
 #define M 1003
 #define mod 123456789
 #define inf 1e18
+#define FOR(i,l,r) for(int i=l;i<=r;i++)
+#define FOD(i,r,l) for(int i=r;i>=l;i--)
 using namespace std;
 
-int m,n,dem0=0,vangmax;
-int a[N],vang[N],xanh[N],t[N];
-
-void update(int id,int val){
-    while(id<N){
-        t[id]+=val;
-        id+=id&(-id);
-    }
-}
-
-inr get(int id,int lim){
-    inr res=0;
-    while(id<=lim){
-        res+=t[id];
-        id+=id&(-id);
-    }
-    return res;
-}
+int n,m;
+inr vang[N],xanh[N],ans,minl[N],minr[N],ansv,ansx;
+stack<inr>sl,sr;
 
 main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0);cout.tie(0);
-    //freopen("rect.inp","r",stdin);
-    //freopen("rect.out","w",stdout);
+    freopen("rect.inp","r",stdin);
+    freopen("rect.out","w",stdout);
     cin>>m>>n;
-    for(int i=1;i<=n;i++){
-        cin>>a[i];
-        vang[i]=a[i];
-        xanh[i]=m-a[i];
-        if(a[i]==0)dem0++;
-        update(vang[i],1);
-        vangmax=max(vangmax,vang[i]);
+    FOR(i,1,n){
+        cin>>vang[i];
+        xanh[i]=m-vang[i];
     }
-    for(int i=1;i<=vangmax;i++){
-        inr tmp=get(i,vangmax);
-        cout<<tmp<<" ";
+    vang[0]=vang[n+1]=xanh[0]=xanh[n+1]=-1;
+    sl.push(0);sr.push(n+1);
+    FOR(i,1,n){
+        while(vang[sl.top()]>=vang[i]) sl.pop();
+        minl[i]=sl.top();
+        sl.push(i);
     }
+    FOD(i,n,1){
+        while(vang[sr.top()]>=vang[i]) sr.pop();
+        minr[i]=sr.top();
+        ansv=max(ansv,(minr[i]-minl[i]-1)*vang[i]);
+        sr.push(i);
+    }
+    while(!sl.empty()) sl.pop();
+    while(!sr.empty()) sr.pop();
+    sl.push(0);sr.push(n+1);
+    FOR(i,1,n){
+        while(xanh[sl.top()]>=xanh[i]) sl.pop();
+        minl[i]=sl.top();
+        sl.push(i);
+    }
+    FOD(i,n,1){
+        while(xanh[sr.top()]>=xanh[i]) sr.pop();
+        minr[i]=sr.top();
+        ansx=max(ansx,(minr[i]-minl[i]-1)*xanh[i]);
+        sr.push(i);
+    }
+    cout<<max(ansx,ansv);
 }

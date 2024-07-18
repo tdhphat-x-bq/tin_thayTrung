@@ -4,11 +4,13 @@
 #define M 1003
 #define mod 123456789
 #define inf 1e18
+#define FOR(i,l,r) for(int i=l;i<=r;i++)
+#define FOD(i,r,l) for(int i=r;i>=l;i--)
 using namespace std;
 
-int n,ans;
-inr a[N];
-stack<inr>st;
+int n;
+inr a[N],ans;
+stack<int>st;
 
 main() {
     ios_base::sync_with_stdio(0);
@@ -16,13 +18,24 @@ main() {
     freopen("pairs.inp","r",stdin);
     freopen("pairs.out","w",stdout);
     cin>>n;
-    for(int i=1;i<=n;i++)cin>>a[i];
-    a[n]=1e18;
-    st.push(n);
-    for(int i=n-1;i>0;i--){
-        while(!st.empty() and a[st.top()] < a[i]) st.pop();
-        ans+=(st.top()-i);
+    FOR(i,1,n)cin>>a[i];
+    a[0]=inf;st.push(0);
+    FOR(i,1,n){
+        if(a[st.top()] > a[i]) ans++;
+        else if(a[st.top()] == a[i]){
+            ans++;
+            st.pop();
+        }else{
+            while(a[st.top()] < a[i]){
+                ans++;
+                st.pop();
+            }
+            ans++;
+            if(st.top() == 0)ans--;
+            if(a[st.top()] == a[i]) st.pop();
+        }
+
         st.push(i);
     }
-    cout<<ans;
+    cout<<ans-1;
 }
